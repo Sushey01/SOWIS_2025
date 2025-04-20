@@ -1,81 +1,59 @@
 
-// Simulated delay to mimic API calls
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+import { MOCK_USERS, MOCK_PRODUCTS } from '@/constants/mockData';
+import { User } from '@/contexts/AuthContext';
+import { Product } from '@/data/products';
 
-// Import mock data
-import { products, Product } from '@/data/products';
+// Utility function for simulating network delay
+const simulateNetworkDelay = (ms = 300) => 
+  new Promise(resolve => setTimeout(resolve, ms));
 
-// Products API
-export const productsApi = {
-  getAll: async (): Promise<Product[]> => {
-    await delay(500); // Simulate network delay
-    return products;
-  },
-  
-  getById: async (id: string): Promise<Product | undefined> => {
-    await delay(300);
-    return products.find(product => product.id === id);
-  },
-  
-  getByCategory: async (category: Product['category']): Promise<Product[]> => {
-    await delay(300);
-    return products.filter(product => product.category === category);
-  },
-  
-  getFeatured: async (): Promise<Product[]> => {
-    await delay(300);
-    return products.filter(product => product.featured);
-  }
-};
-
-// Auth API
-interface LoginCredentials {
-  email: string;
-  password: string;
-}
-
-export const authApi = {
-  login: async ({ email, password }: LoginCredentials) => {
-    await delay(500);
-    const user = MOCK_USERS.find(
-      (u) => u.email === email && u.password === password
-    );
+// Authentication service
+export const authService = {
+  /**
+   * Authenticate user with email and password
+   * @param email User's email
+   * @param password User's password
+   * @returns User object without password
+   */
+  async login(email: string, password: string) {
+    await simulateNetworkDelay();
+    
+    const user = MOCK_USERS.find(u => u.email === email && u.password === password);
     
     if (!user) {
       throw new Error("Invalid credentials");
     }
     
+    // Remove password before returning
     const { password: _, ...userWithoutPassword } = user;
     return userWithoutPassword;
   },
-  
-  logout: async () => {
-    await delay(300);
+
+  /**
+   * Logout current user
+   */
+  async logout() {
+    await simulateNetworkDelay();
     localStorage.removeItem("sowisUser");
   }
 };
 
-// Mock users (moved from AuthContext)
-const MOCK_USERS = [
-  {
-    id: "1",
-    email: "admin@sowis.com",
-    password: "admin123",
-    name: "Admin User",
-    role: "admin" as const,
+// Product service
+export const productService = {
+  /**
+   * Get all products
+   */
+  async getAll(): Promise<Product[]> {
+    await simulateNetworkDelay();
+    return MOCK_PRODUCTS;
   },
-  {
-    id: "2",
-    email: "manager@sowis.com",
-    password: "manager123",
-    name: "Manager User",
-    role: "manager" as const,
-  },
-  {
-    id: "3",
-    email: "customer@sowis.com",
-    password: "customer123",
-    name: "Customer User",
-    role: "customer" as const,
-  },
-];
+
+  /**
+   * Get product by ID
+   * @param id Product identifier
+   */
+  async getById(id: string): Promise<Product | undefined> {
+    await simulateNetworkDelay();
+    return MOCK_PRODUCTS.find(product => product.id === id);
+  }
+};
