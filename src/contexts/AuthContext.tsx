@@ -1,5 +1,6 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { authApi } from "@/services/api";
 
 // Define user roles
 export type UserRole = "admin" | "manager" | "customer";
@@ -25,31 +26,6 @@ interface AuthContextType {
 // Create Auth Context
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Mock users for demonstration
-const MOCK_USERS = [
-  {
-    id: "1",
-    email: "admin@sowis.com",
-    password: "admin123",
-    name: "Admin User",
-    role: "admin" as UserRole,
-  },
-  {
-    id: "2",
-    email: "manager@sowis.com",
-    password: "manager123",
-    name: "Manager User",
-    role: "manager" as UserRole,
-  },
-  {
-    id: "3",
-    email: "customer@sowis.com",
-    password: "customer123",
-    name: "Customer User",
-    role: "customer" as UserRole,
-  },
-];
-
 // Provider Component
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -67,29 +43,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // Login function
   const login = async (email: string, password: string) => {
     setIsLoading(true);
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    const foundUser = MOCK_USERS.find(
-      (u) => u.email === email && u.password === password
-    );
-    
-    if (!foundUser) {
+    try {
+      const user = await authApi.login({ email, password });
+      setUser(user);
+      localStorage.setItem("sowisUser", JSON.stringify(user));
+    } finally {
       setIsLoading(false);
-      throw new Error("Invalid credentials");
     }
-    
-    const { password: _, ...userWithoutPassword } = foundUser;
-    setUser(userWithoutPassword);
-    localStorage.setItem("sowisUser", JSON.stringify(userWithoutPassword));
-    setIsLoading(false);
   };
 
   // Logout function
-  const logout = () => {
+  const logout = async () => {
+    await authApi.logout();
     setUser(null);
-    localStorage.removeItem("sowisUser");
   };
 
   // Helper functions for role checks
