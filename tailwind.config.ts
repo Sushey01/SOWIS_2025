@@ -52,6 +52,14 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+                sowis: {
+                    light: '#D2B48C',   // Light brown
+                    DEFAULT: '#C8B6A6', // Primary brown
+                    dark: '#A89882',    // Dark brown
+                    cream: '#F5F5DC',   // Cream color
+                    white: '#FFFFFF',   // Pure white
+                    offwhite: '#F8F8F8' // Off-white
+                },
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
