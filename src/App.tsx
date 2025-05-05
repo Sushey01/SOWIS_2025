@@ -9,6 +9,10 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import BlogPage from "./pages/BlogPage";
+import ShopPage from "./pages/ShopPage";
 
 const queryClient = new QueryClient();
 
@@ -19,12 +23,17 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Layout><Home /></Layout>} />
-            <Route path="/login" element={<Layout><Login /></Layout>} />
-            <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
-            <Route path="*" element={<Layout><NotFound /></Layout>} />
-          </Routes>
+        <Routes>
+        <Route path="/login" element={<Layout><Login /></Layout>} />
+        <Route path="/" element={<Layout><Home /></Layout>} />
+        <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
+        <Route path="/about" element={<Layout><About /></Layout>} />
+        <Route path="/contact" element={<Layout><Contact/></Layout>} />
+        <Route path="/blog" element={<Layout><BlogPage/></Layout>} />
+        <Route path="/shop" element={<Layout><ShopPage/></Layout>} />
+        <Route path="*" element={<Layout><NotFound /></Layout>} />
+        </Routes>
+
         </BrowserRouter>
       </AuthProvider>
     </TooltipProvider>
